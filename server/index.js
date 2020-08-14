@@ -214,114 +214,226 @@ app.post('/api/users/image/:userId', upload.single('image'), (req, res, next) =>
     .catch(err => next(err));
 
 });
-// POST request for user can write review
-app.post('/api/reviews', (req, res, next) => {
-  const movieId = req.body.movieId;
-  const userId = req.body.userId;
-  const rating = req.body.rating;
-  const content = req.body.content;
-  const title = req.body.title;
 
+// Reviews Table: Post, Get, Patch, and Delete Method Routes
+
+//  Post method route for the endpoint at /api/reviews
+app.post('/api/reviews', (request, response, next) => {
+
+  //  Assign the value of the movieId property of the body property of
+  //  the request object to a constant named movieId
+  const movieId = request.body.movieId;
+
+  //  Assign the value of the userId property of the body property of
+  //  the request object to a constant named userId
+  const userId = request.body.userId;
+
+  //  Assign the value of the rating property of the body property of
+  //  the request object to a constant named rating
+  const rating = request.body.rating;
+
+  //  Assign the value of the content property of the body property of
+  //  the request object to a constant named content
+  const content = request.body.content;
+
+  //  Assign the value of the title property of the body property of
+  //  the request object to a constant named title
+  const title = request.body.title;
+
+  //  If the value assigned to the constant named movieId is less than 1 or NaN
   if (movieId < 1 || isNaN(movieId)) {
-    res.status(400).json({ error: 'invalid id' });
+    // Send an object as a JSON response with HTTP status code 400
+    response.status(400).json({ error: 'invalid id' });
     return;
   }
 
+  //  If the value of the constant named userId is falsy, the value of the constant
+  //  named rating is less than 0, or value of the constant named content is falsy
   if (!userId || rating < 0 || !content) {
-    res.status(400).json({ error: 'missing content' });
+    //  Send an object as a JSON response with HTTP status code 400
+    response.status(400).json({ error: 'missing content' });
     return;
   }
 
-  const sql = `
+  //  Assign a template literal to a constant named sqlStatement
+  const sqlStatement = `
     insert into "reviews" ("userId", "rating", "content", "movieId", "title" )
-    values ($1, $2, $3, $4, $5)
+      values ($1, $2, $3, $4, $5)
     returning *;
   `;
 
-  const params = [userId, rating, content, movieId, title];
+  // Assign an array of five variables to a constant named parameters
+  const parameters = [userId, rating, content, movieId, title];
 
-  db.query(sql, params)
-    .then(response => {
-      if (!response.rows[0]) {
-        res.status(404).json({ error: 'cannot review movie' });
-      } else {
-        res.status(201).json(response.rows[0]);
+  //  Call the query method on the db object passing in two arguments:
+  //  a constant named sqlStatement and a constant named parameters
+  db.query(sqlStatement, parameters)
+  //  If the promise is fulfilled, then invoke the callback function
+    .then(promiseResult => {
+      //  If the first index of the rows property of the promise result is falsy
+      if (!promiseResult.rows[0]) {
+        //
+        next(new ClientError('no reviews in table'), 404);
+      } else { //  Otherwise
+        //  Pass the value stored in the first row of the reviews table
+        //  as a JSON response with HTTP status code 201 in the header
+        response.status(201).json(promiseResult.rows[0]);
       }
     })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: 'an unexpected error occurred' });
+    //  If a promise is rejected
+    .catch(error => {
+      // Write the error to the console and
+      console.error(error);
+      // Send an object as a JSON response with HTTP status code 500
+      response.status(500).json({ error: 'an unexpected error occurred' });
     });
-});
+}); // End of post method route for endpoint at /api/reviews
 
-// GET request for User Can View Self/Other User Reviews
-app.get('/api/reviews/:userId', (req, res, next) => {
-  const userId = req.params.userId;
-  const sql = `
+//  Get method route for endpoint at /api/review/:userId
+app.get('/api/reviews/:userId', (request, response, next) => {
+
+  //  Assign the value of the userId property of the params property of
+  //  the request object to a constant named userId
+  const userId = request.params.userId;
+
+  // Assign a template literal to a constant named sqlStatement
+  const sqlStatement = `
   select *
     from "reviews"
     where "userId" = $1
   `;
-  const params = [userId];
-  db.query(sql, params)
-    .then(result => {
-      // eslint-disable-next-line no-console
-      if (result.rows.length < 1) {
-        res.json([]);
-      } else {
-        res.status(200).json(result.rows);
+
+  //  Assign an array literal with one element to a constant named parameters
+  const parameters = [userId];
+
+  //  Call the query method of the db object passing in two arguments:
+  //  a constant named sqlStatement and a constant named parameters
+  db.query(sqlStatement, parameters)
+    //  If the promise is fulfilled, then invoke the callback function
+    .then(promiseResult => {
+      //  If the first index of the rows property of the promise result is falsy
+      if (!promiseResult.rows[0]) {
+        //
+        next(new ClientError('no reviews in table'), 404);
+      } else { //  Otherwise
+        //  Send the rows property of the promiseResult object as a JSON
+        //  response with HTTP status code 200
+        response.status(200).json(promiseResult.rows);
       }
     })
-    .catch(err => next(err));
-}); // end of GET request for User Can View Self/Other User Reviews
+    //  If a promise is rejected
+    .catch(err => {
+      //  Write an error message to the console
+      console.error(err);
+      //  Send an object as a JSON response with HTTP status code 500
+      response.status(500).json({ error: 'an unexpected error occurred' });
+    });
+}); // End of get method route for endpoint at /api/reviews/:userId
 
-// PATCH request for User Can Edit Own Review
-app.patch('/api/reviews/:reviewId', (req, res, next) => {
-  const reviewId = req.params.reviewId;
-  const rating = req.body.rating;
-  const content = req.body.content;
+//  Patch method route for endpoint at /api/reviews/:reviewId
+app.patch('/api/reviews/:reviewId', (request, response, next) => {
 
+  //  Assign the value assigned to the reviewId property of the params property
+  //  of the request object to a constant named reviewId
+  const reviewId = request.params.reviewId;
+
+  //  Assign the value assigned to the rating property of the body property
+  //  of the request object to a constant named rating
+  const rating = request.body.rating;
+
+  //  Assign the value assigned to the content property of the body property
+  //  of the request object to a constant named content
+  const content = request.body.content;
+
+  //  If the value of the constant named reviewId is less than 1 or is NaN
   if (reviewId < 1 || isNaN(reviewId)) {
-    res.status(400).json({ error: 'invalid review id' });
+    //  Send a JSON object as a response with HTTP status code 400
+    response.status(400).json({ error: 'invalid review id' });
     return;
   }
+
+  //  If the value of the constant named rating or content is falsy
   if (!rating || !content) {
-    res.status(400).json({ error: 'missing required information' });
+    //  Send a JSON object as a response with HTTP status code 400
+    response.status(400).json({ error: 'missing required information' });
     return;
   }
 
-  const sql = `
-  update "reviews"
-    set "rating" = $1, "content" = $2
-    where "reviewId" = $3
+  //  Assign a template literal to a constant named sqlStatement
+  const sqlStatement = `
+    update "reviews"
+      set "rating" = $1, "content" = $2
+      where "reviewId" = $3
     returning *
   `;
 
-  const params = [rating, content, reviewId];
+  //  Assign an array literal with three elements to a constant named parameters
+  const parameters = [rating, content, reviewId];
 
-  db.query(sql, params)
-    .then(result => res.sendStatus(200))
-    .catch(err => next(err));
-}); // end of PATCH request for User Can Edit Own Review
-
-// user can delete review
-app.delete('/api/reviews/:reviewId', (req, res, next) => {
-  const reviewId = req.params.reviewId;
-  const sql = `
-    delete from "reviews" where "reviewId" = $1
-    returning *
-  `;
-  const params = [reviewId];
-  db.query(sql, params)
-    .then(result => {
-      if (result.rows.length < 1) {
-        next(new ClientError('no items in list'), 404);
-      } else {
-        res.json(result.rows);
+  //  Call the query method of the db object passing in two arguments:
+  //  a constant named sqlStatement and a constant named parameters
+  db.query(sqlStatement, parameters)
+  //  If the promise is fulfilled, then invoke the callback function
+    .then(promiseResult => {
+      //  If the first index of the rows property of the promise result is falsy
+      if (!promiseResult.rows[0]) {
+        //
+        next(new ClientError('no reviews in table'), 404);
+      } else { //  Otherwise
+      //  Send the promiseResult object as a JSON response with
+      //  HTTP status code 200
+        response.status(200).json(promiseResult);
       }
     })
-    .catch(error => next(error));
-}); // end of user can delete review
+    //  If a promise is rejected
+    .catch(err => {
+      // Write the error to the console and
+      console.error(err);
+      // Send an object as a JSON response with HTTP status code 500
+      response.status(500).json({ error: 'an unexpected error occurred' });
+    });
+}); // End of patch method route for endpoint at /api/reviews/:reviewId
+
+//  Delete method route for endpoint at /api/reviews/:reviewId
+app.delete('/api/reviews/:reviewId', (request, response, next) => {
+
+  //  Assign the value assigned to the reviewId property of the params property
+  //  of the request object to a constant named reviewId
+  const reviewId = request.params.reviewId;
+
+  //  Assign a template literal to a constant named sqlStatement
+  const sqlStatement = `
+    delete from "reviews"
+      where "reviewId" = $1
+    returning *
+  `;
+
+  // Assign an array literal with one element to a constant named parameters
+  const parameters = [reviewId];
+
+  //  Call the query method of the db object passing in two arguments:
+  //  a constant named sqlStatement and a constant named parameters
+  db.query(sqlStatement, parameters)
+  //  If the promise is fulfilled, invoke the callback function
+    .then(promiseResult => {
+      //  If the first index of the rows property of the promise result is falsy
+      if (!promiseResult.rows[0]) {
+        //
+        next(new ClientError('no reviews in table'), 404);
+      } else { //  Otherwise
+        //  Send the rows property of the promiseResult object as a JSON
+        //  response with HTTP status code 200
+        response.status(200).json(promiseResult.rows);
+      }
+    })
+    //  If a promise is rejected
+    .catch(err => {
+      // Write the error to the console and
+      console.error(err);
+      // Send an object as a JSON response with HTTP status code 500
+      response.status(500).json({ error: 'an unexpected error occurred' });
+    });
+}); // End of delete method route for endpoint at /api/reviews/:reviewId
 
 app.get('/api/lists/:userId', (req, res, next) => {
   const id = req.params.userId;

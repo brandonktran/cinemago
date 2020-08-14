@@ -36,14 +36,14 @@ class ViewReviewsCard extends React.Component {
       <>
         <div className="row m-2 border container white">
           <div className="col m-2">
-            <h5>{this.props.item.title}</h5>
+            <h3>{this.props.item.title}</h3>
             <p style={{ alignItems: 'baseline-position' }}>
               <StarRatingComponent
                 name="userRating"
                 starCount={5}
                 value={this.state.rating} />
             </p>
-            <p>{this.props.item.content}</p>
+            <p style={{ fontSize: '1.3rem' }}>{this.props.item.content}</p>
           </div>
           <div>
             <Button outline={true} color="secondary" className="m-2" onClick={() => this.toggleModal()}>Edit Review</Button>
