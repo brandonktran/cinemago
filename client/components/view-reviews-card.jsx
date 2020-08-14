@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardText, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import StarRatingComponent from 'react-star-rating-component';
 
 class ViewReviewsCard extends React.Component {
@@ -32,49 +32,45 @@ class ViewReviewsCard extends React.Component {
   }
 
   render() {
-    return (
-      <>
-        <div className="row m-2 border container white">
-          <div className="col m-2">
-            <h3>{this.props.item.title}</h3>
-            <p style={{ alignItems: 'baseline-position' }}>
-              <StarRatingComponent
-                name="userRating"
-                starCount={5}
-                value={this.state.rating} />
-            </p>
-            <p style={{ fontSize: '1.3rem' }}>{this.props.item.content}</p>
+    return (<>
+      <div className="row m-2 border container white">
+        <div className="col m-2">
+          <h3 className="pl-0 pt-4">{this.props.item.title}</h3>
+          <div className="align-bottom">
+            <StarRatingComponent
+              name="userRating"
+              starCount={5}
+              value={this.state.rating} />
           </div>
-          <div>
-            <Button outline={true} color="secondary" className="m-2" onClick={() => this.toggleModal()}>Edit Review</Button>
-            <button className='btn btn-outline-danger m-2' onClick={() => this.props.deleteReview(this.props.item.reviewId)}>Delete Review</button>
-          </div>
+          <div style={{ fontSize: '1.3rem' }}>{this.props.item.content}</div>
+        </div>
+        <div className="pl-2 pb-4">
+          <Button outline={true} color="secondary" className="m-2" onClick={() => this.toggleModal()}>Edit Review</Button>
+          <button className='btn btn-outline-danger m-2 ml-4' onClick={() => this.props.deleteReview(this.props.item.reviewId)}>Delete Review</button>
+        </div>
+      </div >
 
-        </div >
-
-        <Modal isOpen={this.state.modalShow} toggle={() => this.toggleModal()} centered={true}>
-          <ModalHeader toggle={() => this.toggleModal()}>update your review</ModalHeader>
-          <ModalBody>
-            <form className="container">
-              <StarRatingComponent
-                name="rate1"
-                starCount={5}
-                value={this.state.rating}
-                style={{ justifyContent: 'center' }}
-                onStarClick={this.onStarClick.bind(this)}
-              />
-              <input onChange={this.handleText} value={this.state.text} className="form-control" placeholder="Name of new list" id="listName"></input>
-            </form>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="secondary" onClick={() => this.toggleModal()}>Cancel</Button>
-            <Button color="primary" onClick={() => this.handleSubmit(event)}>Update Review</Button>{' '}
-          </ModalFooter>
-        </Modal>
-      </>
-
+      <Modal isOpen={this.state.modalShow} toggle={() => this.toggleModal()} centered={true}>
+        <ModalHeader toggle={() => this.toggleModal()}>update your review</ModalHeader>
+        <ModalBody>
+          <form className="container">
+            <StarRatingComponent
+              name="rate1"
+              starCount={5}
+              value={this.state.rating}
+              style={{ justifyContent: 'center' }}
+              onStarClick={this.onStarClick.bind(this)}
+            />
+            <input onChange={this.handleText} value={this.state.text} className="form-control" placeholder="Name of new list" id="listName"></input>
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={() => this.toggleModal()}>Cancel</Button>
+          <Button color="primary" onClick={() => this.handleSubmit(event)}>Update Review</Button>{' '}
+        </ModalFooter>
+      </Modal>
+    </>
     );
-
   }
 }
 export default ViewReviewsCard;

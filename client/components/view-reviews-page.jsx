@@ -6,11 +6,11 @@ class ViewReviewsPage extends React.Component {
 
   render() {
     return (<>
-      <div style={{ paddingLeft: '22px' }}>
+      <div className="pl-4">
         <button className="btn btn-outline-danger" onClick={() => this.props.backToProfile()}>Go Back</button>
       </div>
-      <div className="container" style={{ paddingTop: '22px', paddingLeft: '22px', paddingBottom: '42px' }}>
-        <h1>My Reviews</h1>
+      <div className="container pt-2 pb-5">
+        <h1 className="pl-3 pt-2">My Reviews</h1>
         <div className="row container mt-1">
           <CSSTransitionGroup
             key={'my-reviews'}
