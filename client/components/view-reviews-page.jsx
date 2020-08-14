@@ -19,7 +19,7 @@ class ViewReviewsPage extends React.Component {
             transitionAppearTimeout={500}
             transitionEnter={true}
             transitionLeave={true}
-            style={{ width: '100%' }}>
+            className="w-100">
             {this.props.reviews.map((item, index) => {
               return (
                 <ViewReviewsCard
