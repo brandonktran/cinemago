@@ -94,7 +94,7 @@ button.focus,button:active.focus,button.active.focus {
 }
 
 @media (max-width: 544px) {
-  .card-title {font-size:2rem;}
+  .card-title {font-size:1.5rem;}
   .card-subtitle, .dynamicButton {font-size:0.8rem;}
   .card-text {font-size:0.8rem;}
   .listButton {font-size: 0.8rem;}/*1rem = 16px*/
@@ -154,4 +154,16 @@ button.focus,button:active.focus,button.active.focus {
 .example-leave.example-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
+}
+
+.centered {
+  height: 100vh; /* Magic here */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.center2 {
+  flex-basis: 50%;
 }

@@ -20,7 +20,7 @@ export default class MessageCard extends React.Component {
 
   render() {
     console.log(this.props.id);
-    return (<div className="border p-2 m-2 white">
+    return (<div className="border p-3 m-2 white">
 
       <h5>From: {this.props.item.name}</h5>
       <p>Content: {this.props.item.content}</p>

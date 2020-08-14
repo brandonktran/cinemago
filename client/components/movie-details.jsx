@@ -98,8 +98,14 @@ export default class MovieDetails extends React.Component {
   }
 
   render() {
-    const backDropPath = this.props.details[1].backdrop_path;
-    const posterPath = this.props.details[1].poster_path;
+    let backDropPath = null;
+    if (this.props.details[1]) {
+      backDropPath = this.props.details[1].backdrop_path;
+    }
+    let posterPath = null;
+    if (this.props.details[1]) {
+      posterPath = this.props.details[1].poster_path;
+    }
     let youtubeURL = null;
     if (this.props.details[3].results[0] !== undefined) {
       youtubeURL = this.props.details[3].results[0].key;

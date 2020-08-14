@@ -31,9 +31,9 @@ export default class LoginPage extends React.Component {
 
     return (<>
 
-      <div className="container h-100">
-        <h1 className="loginTitle">MOVIFY</h1>
-        <div className="login my-auto">
+      <div className="container centered">
+        <div className="center2 mb-4">
+          <h1 className="loginTitle" >MOVIFY</h1>
           <form className="form-login" onSubmit={this.handleSubmit}>
             <input
               type="text"
@@ -53,9 +53,9 @@ export default class LoginPage extends React.Component {
             />
             <input className="btn btn-secondary m-1" type="submit" value="Sign In"></input>
           </form>
-        </div>
-        <div>
-          <button className="btn btn-secondary m-1" onClick={() => this.props.changeView('signUp')}>Create Account</button>
+          <div className="center2">
+            <button className="btn btn-secondary m-1" onClick={() => this.props.changeView('signUp')}>Create Account</button>
+          </div>
         </div>
       </div>
     </>);

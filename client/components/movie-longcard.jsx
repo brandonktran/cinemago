@@ -51,7 +51,7 @@ class MovieLongCard extends React.Component {
             <h4 className="card-subtitle mb-2 text-muted">Popularity:{this.props.fullInfo.popularity}</h4>
             <h4 className="card-subtitle mb-2 text-muted">Rating:{this.props.fullInfo.vote_average}</h4>
             <h4 className="card-subtitle mb-2 text-muted">Release Year:{year}</h4>
-            <p className="card-text">{this.props.fullInfo.overview}</p>
+            <p className="card-text">{this.props.fullInfo.overview.substring(0, 150) + '...'}</p>
             <div className="form-row flex-nowrap">
               <Button outline={true} color="info" className="dynamicButton m-2" onClick={() => this.handleClick(event)}>View Details</Button>
               <Button outline={true} color="success" onClick={() => this.addModal()} className="dynamicButton m-2">Add To list</Button>
